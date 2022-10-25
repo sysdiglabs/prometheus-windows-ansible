@@ -1,0 +1,30 @@
+---
+# defaults file for prometheus_windows
+
+prom_include_win_exporter: true
+prom_include_prometheus_agent: true
+
+prom_remote_write_url: https://api.sysdigcloud.com/prometheus/remote/write
+prom_remote_write_token:
+
+prom_scrape_interval: 10s
+prom_server_log_level: warn
+
+prom_extra_scrape_configs: []
+
+prom_windows_exporter_installer: https://github.com/prometheus-community/windows_exporter/releases/download/v0.20.0/windows_exporter-0.20.0-amd64.msi
+
+prom_server_package: https://github.com/prometheus/prometheus/releases/download/v2.39.1/prometheus-2.39.1.windows-amd64.zip
+prom_server_package_checksum: 7e2524bb498e29d607be949d070a95e6da283973f363ad87c40a8de29c219220
+prom_server_version: "2.39.1"
+prom_server_arch: amd64
+
+prom_nssm_package: https://nssm.cc/ci/nssm-2.24-101-g897c7ad.zip
+prom_nssm_package_checksum: 99f5045fffbffb745d67fe3a065a953c4a3d9c253b868892d9b685b0ee7d07b8
+prom_nssm_version: 2.24-101-g897c7ad
+prom_nssm_arch: win64
+
+prom_temp_dir: "%TEMP%"
+prom_app_dir: C:\Program Files\prometheus
+prom_data_dir: "%ProgramData%\\prometheus"
+prom_config_file: "{{ prom_data_dir }}\\prometheus.yml"

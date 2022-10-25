@@ -1,0 +1,10 @@
+---
+- name: Install the Windows exporter
+  win_package:
+    path: "{{ prom_windows_exporter_installer }}"
+
+- name: Ensure service is started
+  win_service:
+    name: windows_exporter
+    start_mode: auto
+    state: started
