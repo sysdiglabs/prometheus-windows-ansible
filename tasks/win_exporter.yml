@@ -3,8 +3,24 @@
   win_package:
     path: "{{ prom_windows_exporter_installer }}"
 
+- name: Create windows_exporter data directory
+  ansible.windows.win_file:
+    path: "{{ prom_windows_exporter_data_dir }}"
+    state: directory
+
+- name: Create textfile collector directory
+  ansible.windows.win_file:
+    path: "{{ prom_windows_exporter_textfile_dir }}"
+    state: directory
+
+- name: Land windows_exporter config
+  win_template:
+    src: windows_exporter.yml.j2
+    dest: "{{ prom_windows_exporter_config_file }}"
+
 - name: Ensure service is started
   win_service:
     name: windows_exporter
     start_mode: auto
     state: started
+    path: '"C:\Program Files\windows_exporter\windows_exporter.exe" --config.file "{{ prom_windows_exporter_config_file }}"'

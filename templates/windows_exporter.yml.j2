@@ -1,0 +1,8 @@
+collectors:
+  enabled: {{ prom_windows_exporter_enabled_collectors |join(',') }}
+collector:
+  textfile:
+    directory: {{ prom_windows_exporter_textfile_dir | to_yaml }}
+log:
+  level: {{ prom_windows_exporter_log_level }}
+  format: logger:eventlog?name=windows_exporter

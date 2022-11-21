@@ -13,6 +13,23 @@ prom_server_log_level: warn
 prom_extra_scrape_configs: []
 
 prom_windows_exporter_installer: https://github.com/prometheus-community/windows_exporter/releases/download/v0.20.0/windows_exporter-0.20.0-amd64.msi
+prom_windows_exporter_enabled_collectors:
+- cpu
+- cs
+- logical_disk
+- net
+- os
+- service
+- system
+- textfile
+- process
+
+prom_windows_exporter_log_level: warn
+
+prom_windows_exporter_data_dir: "%ProgramData%\\windows_exporter"
+prom_windows_exporter_config_file: "{{ prom_windows_exporter_data_dir }}\\exporter.yml"
+prom_windows_exporter_textfile_dir: "{{ prom_windows_exporter_data_dir }}\\textfiles"
+
 
 prom_server_package: https://github.com/prometheus/prometheus/releases/download/v2.39.1/prometheus-2.39.1.windows-amd64.zip
 prom_server_package_checksum: 7e2524bb498e29d607be949d070a95e6da283973f363ad87c40a8de29c219220
