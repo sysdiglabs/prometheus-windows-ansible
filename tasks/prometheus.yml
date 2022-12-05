@@ -11,18 +11,42 @@
 - name: Install prometheus
   when: prom_installed_version.failed or prom_installed_version.stdout is not search("^prometheus, version " ~ prom_server_version)
   block:
+    - name: Download Prometheus locally
+      delegate_to: localhost
+      get_url: 
+        url: "{{ prom_server_package }}"
+        dest: "/tmp/prometheus.zip"
+      when: localdownload == "true"
+    - name: Download nssm locally
+      delegate_to: localhost
+      get_url: 
+        url: "{{ prom_nssm_package }}"
+        dest: "/tmp/nssm.zip"
+      when: localdownload == "true"
+    - name: Copy Prometheus
+      win_copy: 
+        src: "/tmp/prometheus.zip"
+        dest: "{{ prom_temp_dir }}\\prometheus.zip"
+      when: localdownload == "true"
+    - name: Copy nssm
+      win_copy: 
+        src: "/tmp/prometheus.zip"
+        dest: "{{ prom_temp_dir }}\\nssm.zip"
+      when: localdownload == "true"
     - name: Download Prometheus
       win_get_url:
         url: "{{ prom_server_package }}"
         checksum: "{{ prom_server_package_checksum }}"
         checksum_algorithm: sha256
         dest: "{{ prom_temp_dir }}\\prometheus.zip"
+      when: localdownload == "false"
     - name: Download nssm
       win_get_url:
         url: "{{ prom_nssm_package }}"
         checksum: "{{ prom_nssm_package_checksum }}"
         checksum_algorithm: sha256
         dest: "{{ prom_temp_dir }}\\nssm.zip"
+      when: localdownload == "false"
     - name: Extract Prometheus
       win_unzip:
         src: "{{ prom_temp_dir }}\\prometheus.zip"
@@ -47,6 +71,10 @@
     path: "{{ prom_data_dir }}"
     state: directory
 
+- name: Get hostname
+  win_shell: hostname
+  register: machine_hostname
+
 - name: Land Prometheus config
   win_template:
     src: prometheus.yml.j2
@@ -55,7 +83,7 @@
 - name: Configure Prometheus agent to run as a service
   win_nssm:
     name: Prometheus
-    state: started
+    state: restarted
     display_name: Prometheus Agent
     description: Prometheus server in agent mode writing to Sysdig Secure
     application: "{{ prom_app_dir }}\\prometheus.exe"
