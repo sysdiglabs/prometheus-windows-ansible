@@ -71,10 +71,6 @@
     path: "{{ prom_data_dir }}"
     state: directory
 
-- name: Get hostname
-  win_shell: hostname
-  register: machine_hostname
-
 - name: Land Prometheus config
   win_template:
     src: prometheus.yml.j2
