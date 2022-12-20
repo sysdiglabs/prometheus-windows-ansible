@@ -16,37 +16,38 @@
       get_url: 
         url: "{{ prom_server_package }}"
         dest: "/tmp/prometheus.zip"
-      when: localdownload == "true"
+      when: localdownload | bool
     - name: Download nssm locally
       delegate_to: localhost
       get_url: 
         url: "{{ prom_nssm_package }}"
         dest: "/tmp/nssm.zip"
-      when: localdownload == "true"
+        timeout: 20
+      when: localdownload | bool
     - name: Copy Prometheus
       win_copy: 
         src: "/tmp/prometheus.zip"
         dest: "{{ prom_temp_dir }}\\prometheus.zip"
-      when: localdownload == "true"
+      when: localdownload | bool
     - name: Copy nssm
       win_copy: 
-        src: "/tmp/prometheus.zip"
+        src: "/tmp/nssm.zip"
         dest: "{{ prom_temp_dir }}\\nssm.zip"
-      when: localdownload == "true"
+      when: localdownload | bool
     - name: Download Prometheus
       win_get_url:
         url: "{{ prom_server_package }}"
         checksum: "{{ prom_server_package_checksum }}"
         checksum_algorithm: sha256
         dest: "{{ prom_temp_dir }}\\prometheus.zip"
-      when: localdownload == "false"
+      when: not localdownload | bool
     - name: Download nssm
       win_get_url:
         url: "{{ prom_nssm_package }}"
         checksum: "{{ prom_nssm_package_checksum }}"
         checksum_algorithm: sha256
         dest: "{{ prom_temp_dir }}\\nssm.zip"
-      when: localdownload == "false"
+      when: not localdownload | bool
     - name: Extract Prometheus
       win_unzip:
         src: "{{ prom_temp_dir }}\\prometheus.zip"

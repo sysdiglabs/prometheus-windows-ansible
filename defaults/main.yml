@@ -47,4 +47,4 @@ prom_app_dir: C:\Program Files\prometheus
 prom_data_dir: "%ProgramData%\\prometheus"
 prom_config_file: "{{ prom_data_dir }}\\prometheus.yml"
 
-localdownload: "false"
+localdownload: false
