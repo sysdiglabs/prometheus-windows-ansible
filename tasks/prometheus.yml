@@ -11,18 +11,43 @@
 - name: Install prometheus
   when: prom_installed_version.failed or prom_installed_version.stdout is not search("^prometheus, version " ~ prom_server_version)
   block:
+    - name: Download Prometheus locally
+      delegate_to: localhost
+      get_url: 
+        url: "{{ prom_server_package }}"
+        dest: "/tmp/prometheus.zip"
+      when: localdownload | bool
+    - name: Download nssm locally
+      delegate_to: localhost
+      get_url: 
+        url: "{{ prom_nssm_package }}"
+        dest: "/tmp/nssm.zip"
+        timeout: 20
+      when: localdownload | bool
+    - name: Copy Prometheus
+      win_copy: 
+        src: "/tmp/prometheus.zip"
+        dest: "{{ prom_temp_dir }}\\prometheus.zip"
+      when: localdownload | bool
+    - name: Copy nssm
+      win_copy: 
+        src: "/tmp/nssm.zip"
+        dest: "{{ prom_temp_dir }}\\nssm.zip"
+      when: localdownload | bool
     - name: Download Prometheus
       win_get_url:
         url: "{{ prom_server_package }}"
         checksum: "{{ prom_server_package_checksum }}"
         checksum_algorithm: sha256
         dest: "{{ prom_temp_dir }}\\prometheus.zip"
+      when: not localdownload | bool
     - name: Download nssm
       win_get_url:
         url: "{{ prom_nssm_package }}"
         checksum: "{{ prom_nssm_package_checksum }}"
         checksum_algorithm: sha256
         dest: "{{ prom_temp_dir }}\\nssm.zip"
+      when: not localdownload | bool
     - name: Extract Prometheus
       win_unzip:
         src: "{{ prom_temp_dir }}\\prometheus.zip"
@@ -55,7 +80,7 @@
 - name: Configure Prometheus agent to run as a service
   win_nssm:
     name: Prometheus
-    state: started
+    state: restarted
     display_name: Prometheus Agent
     description: Prometheus server in agent mode writing to Sysdig Secure
     application: "{{ prom_app_dir }}\\prometheus.exe"

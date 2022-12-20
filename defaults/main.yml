@@ -27,6 +27,7 @@ prom_windows_exporter_enabled_collectors:
 prom_windows_exporter_log_level: warn
 
 prom_windows_exporter_data_dir: "%ProgramData%\\windows_exporter"
+prom_windows_exporter_msi_path: "{{ ansible_env.ProgramData }}\\windows_exporter\\windows_exporter.msi" # need this defined per this issue https://github.com/ansible-collections/ansible.windows/issues/12
 prom_windows_exporter_config_file: "{{ prom_windows_exporter_data_dir }}\\exporter.yml"
 prom_windows_exporter_textfile_dir: "{{ prom_windows_exporter_data_dir }}\\textfiles"
 
@@ -45,3 +46,5 @@ prom_temp_dir: "%TEMP%"
 prom_app_dir: C:\Program Files\prometheus
 prom_data_dir: "%ProgramData%\\prometheus"
 prom_config_file: "{{ prom_data_dir }}\\prometheus.yml"
+
+localdownload: false
