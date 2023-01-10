@@ -24,6 +24,9 @@ prom_windows_exporter_enabled_collectors:
 - textfile
 - process
 
+prom_windows_exporter_services_collected:
+prom_windows_exporter_processes_collected:
+
 prom_windows_exporter_log_level: warn
 
 prom_windows_exporter_data_dir: "%ProgramData%\\windows_exporter"
