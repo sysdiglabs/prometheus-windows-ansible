@@ -37,6 +37,9 @@
   win_template:
     src: windows_exporter.yml.j2
     dest: "{{ prom_windows_exporter_config_file }}"
+  notify: Restart windows_exporter
+  tags:
+    - configure
 
 - name: Ensure service is started
   win_service:

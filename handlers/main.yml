@@ -1,2 +1,11 @@
 ---
 # handlers file for prometheus_windows
+- name: Restart windows_exporter
+  win_service:
+    name: windows_exporter
+    state: restarted
+
+- name: Restart Prometheus
+  win_service:
+    name: Prometheus
+    state: restarted

@@ -76,11 +76,14 @@
   win_template:
     src: prometheus.yml.j2
     dest: "{{ prom_config_file }}"
+  notify: Restart Prometheus
+  tags:
+    - configure
 
 - name: Configure Prometheus agent to run as a service
   win_nssm:
     name: Prometheus
-    state: restarted
+    state: started
     display_name: Prometheus Agent
     description: Prometheus server in agent mode writing to Sysdig Secure
     application: "{{ prom_app_dir }}\\prometheus.exe"

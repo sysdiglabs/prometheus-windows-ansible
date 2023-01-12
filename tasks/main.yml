@@ -3,9 +3,15 @@
 - fail:
     msg: The "prom_remote_write_token" var must be provided
   when: (prom_remote_write_token is not defined) or (prom_remote_write_token|length == 0)
+  tags:
+    - configure
 
 - include_tasks: win_exporter.yml
   when: prom_include_win_exporter
+  tags:
+    - configure
 
 - include_tasks: prometheus.yml
   when: prom_include_prometheus_agent
+  tags:
+    - configure
