@@ -6,10 +6,11 @@ collector:
     whitelist: '({{ prom_windows_exporter_processes_collected|join('|') }})(#\d+)?'
 {% endif %}
   service:
-{% if prom_windows_exporter_services_collected|length > 0 %}
+{% if prom_windows_exporter_services_where_raw|length > 0 %}
+    services-where: {{ prom_windows_exporter_services_where_raw }}
+{% elif prom_windows_exporter_services_collected|length > 0 %}
     services-where: {% for svc in prom_windows_exporter_services_collected %}Name='{{ svc }}'{{ ' OR ' if not loop.last }}{% endfor %}
 {% endif %}
-
   textfile:
     directory: {{ prom_windows_exporter_textfile_dir | to_yaml }}
 log:

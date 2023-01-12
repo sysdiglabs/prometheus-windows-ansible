@@ -12,6 +12,7 @@
 {
 'remote_write': [{
     'url': prom_remote_write_url,
-    'bearer_token': prom_remote_write_token }]
+    'bearer_token': prom_remote_write_token,
+    'proxy_url': prom_remote_write_proxy_url }]
 } | to_nice_yaml
 }}
