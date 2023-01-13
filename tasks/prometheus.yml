@@ -1,9 +1,6 @@
 ---
 - name: Check current prometheus version
-  ansible.windows.win_command:
-    argv:
-    - "{{ prom_app_dir }}\\prometheus.exe"
-    - --version
+  win_command: '"{{ prom_app_dir }}\\prometheus.exe" --version'
   ignore_errors: yes
   changed_when: False
   register: prom_installed_version
@@ -15,23 +12,23 @@
       delegate_to: localhost
       get_url: 
         url: "{{ prom_server_package }}"
-        dest: "/tmp/prometheus.zip"
+        dest: "{{ localdownload_dir }}/prometheus.zip"
       when: localdownload | bool
     - name: Download nssm locally
       delegate_to: localhost
       get_url: 
         url: "{{ prom_nssm_package }}"
-        dest: "/tmp/nssm.zip"
+        dest: "{{ localdownload_dir }}/nssm.zip"
         timeout: 20
       when: localdownload | bool
     - name: Copy Prometheus
       win_copy: 
-        src: "/tmp/prometheus.zip"
+        src: "{{ localdownload_dir }}/prometheus.zip"
         dest: "{{ prom_temp_dir }}\\prometheus.zip"
       when: localdownload | bool
     - name: Copy nssm
       win_copy: 
-        src: "/tmp/nssm.zip"
+        src: "{{ localdownload_dir }}/nssm.zip"
         dest: "{{ prom_temp_dir }}\\nssm.zip"
       when: localdownload | bool
     - name: Download Prometheus
@@ -94,3 +91,5 @@
       - --enable-feature=agent
       - --config.file={{ prom_config_file }}
       - --log.level={{ prom_server_log_level }}
+  retries: 3
+  delay: 5

@@ -3,7 +3,7 @@
   delegate_to: localhost
   get_url: 
     url: "{{ prom_windows_exporter_installer }}"
-    dest: "/tmp/windows_exporter.msi"
+    dest: "{{ localdownload_dir }}/windows_exporter.msi"
   when: localdownload | bool
 
 - name: Create windows_exporter data directory
@@ -13,7 +13,7 @@
 
 - name: Copy Windows installer
   win_copy: 
-    src: "/tmp/windows_exporter.msi"
+    src: "{{ localdownload_dir }}/windows_exporter.msi"
     dest: "{{ prom_windows_exporter_msi_path }}"
   when: localdownload | bool
 
@@ -32,6 +32,17 @@
   ansible.windows.win_file:
     path: "{{ prom_windows_exporter_textfile_dir }}"
     state: directory
+
+- name: Create scripts directory
+  ansible.windows.win_file:
+    path: "{{ prom_windows_exporter_script_dir }}"
+    state: directory
+
+- name: Land custom scripts
+  win_copy:
+    src: "{{ prom_windows_exporter_script_dir_local }}/{{ item.file }}"
+    dest: "{{ prom_windows_exporter_script_dir }}\\"
+  loop: "{{ prom_windows_exporter_scripts }}"
 
 - name: Land windows_exporter config
   win_template:
