@@ -44,6 +44,21 @@
     dest: "{{ prom_windows_exporter_script_dir }}\\"
   loop: "{{ prom_windows_exporter_scripts }}"
 
+- name: Create scheduled tasks
+  win_scheduled_task:
+    name: "Prometheus Custom Script - {{ item.file }}"
+    logon_type: service_account
+    user: LOCAL SERVICE
+    actions:
+      - path: powershell
+        arguments: "-File \"{{ prom_windows_exporter_script_dir }}\\{{ item.file }}\""
+        working_directory: "{{ prom_windows_exporter_textfile_dir }}"
+    triggers:
+      - type: registration
+        repetition:
+          interval: "PT{{ item.interval_minutes }}M"
+  loop: "{{ prom_windows_exporter_scripts }}"
+
 - name: Land windows_exporter config
   win_template:
     src: windows_exporter.yml.j2
