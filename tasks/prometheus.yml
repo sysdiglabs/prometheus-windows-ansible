@@ -91,5 +91,7 @@
       - --enable-feature=agent
       - --config.file={{ prom_config_file }}
       - --log.level={{ prom_server_log_level }}
+  register: result
   retries: 3
   delay: 5
+  until: result is not failed
