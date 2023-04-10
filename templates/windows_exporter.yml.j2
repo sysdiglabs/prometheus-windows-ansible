@@ -1,18 +1,20 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
 collectors:
   enabled: {{ prom_windows_exporter_enabled_collectors |join(',') }}
 collector:
   process:
-{% if prom_windows_exporter_processes_collected|length > 0 %}
+    {% if prom_windows_exporter_processes_collected|length > 0 %}
     whitelist: '({{ prom_windows_exporter_processes_collected|join('|') }})(#\d+)?'
-{% endif %}
+    {% endif %}
   service:
-{% if prom_windows_exporter_services_where_raw|length > 0 %}
+    {% if prom_windows_exporter_services_where_raw|length > 0 %}
     services-where: {{ prom_windows_exporter_services_where_raw }}
-{% elif prom_windows_exporter_services_collected|length > 0 %}
+    {% elif prom_windows_exporter_services_collected|length > 0 %}
     services-where: {% for svc in prom_windows_exporter_services_collected %}Name='{{ svc }}'{{ ' OR ' if not loop.last }}{% endfor %}
-{% endif %}
+    {% endif %}
+
   textfile:
-    directory: {{ prom_windows_exporter_textfile_dir | to_yaml }}
+    directory: {{ prom_windows_exporter_textfile_dir }}
 log:
   level: {{ prom_windows_exporter_log_level }}
   format: logger:eventlog?name=windows_exporter

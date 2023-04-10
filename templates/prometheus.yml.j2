@@ -2,17 +2,16 @@
 {
 'global': {
   'scrape_interval': prom_scrape_interval,
-  'external_labels': prom_global_labels }
-} | to_nice_yaml
-}}
-
-{{ {'scrape_configs': prom_windows_scrape_config + prom_extra_scrape_configs} | to_nice_yaml }}
-
-{{
-{
+  'external_labels': prom_global_labels },
+'scrape_configs': prom_windows_scrape_config + prom_extra_scrape_configs,
 'remote_write': [{
     'url': prom_remote_write_url,
     'bearer_token': prom_remote_write_token,
-    'proxy_url': prom_remote_write_proxy_url }]
+    'proxy_url': prom_remote_write_proxy_url,
+    'write_relabel_configs': [{
+        'source_labels': ['instance'],
+        'target_label': 'instance',
+        'replacement': ansible_hostname}]
+}]
 } | to_nice_yaml
 }}
