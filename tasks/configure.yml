@@ -1,32 +1,4 @@
 ---
-- name: Download Windows installer locally
-  delegate_to: localhost
-  get_url: 
-    url: "{{ prom_windows_exporter_installer }}"
-    dest: "{{ localdownload_dir }}/windows_exporter.msi"
-  when: localdownload | bool
-
-- name: Create windows_exporter data directory
-  ansible.windows.win_file:
-    path: "{{ prom_windows_exporter_data_dir }}"
-    state: directory
-
-- name: Copy Windows installer
-  win_copy: 
-    src: "{{ localdownload_dir }}/windows_exporter.msi"
-    dest: "{{ prom_windows_exporter_msi_path }}"
-  when: localdownload | bool
-
-- name: Install the Windows exporter
-  win_package:
-    path: "{{ prom_windows_exporter_msi_path }}"
-  when: localdownload | bool
-
-- name: Install the Windows exporter
-  win_package:
-    path: "{{ prom_windows_exporter_installer }}"
-    product_id: windows_exporter
-  when: not localdownload  | bool
 
 - name: Create textfile collector directory
   ansible.windows.win_file:
@@ -67,9 +39,10 @@
   tags:
     - configure
 
-- name: Ensure service is started
-  win_service:
-    name: windows_exporter
-    start_mode: auto
-    state: started
-    path: '"C:\Program Files\windows_exporter\windows_exporter.exe" --config.file "{{ prom_windows_exporter_config_file }}"'
+- name: Land Prometheus config
+  win_template:
+    src: prometheus.yml.j2
+    dest: "{{ prom_agent_config_file }}"
+  notify: Restart Prometheus
+  tags:
+    - configure

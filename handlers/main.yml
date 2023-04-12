@@ -7,5 +7,5 @@
 
 - name: Restart Prometheus
   win_service:
-    name: Prometheus
+    name: prometheus_agent
     state: restarted
