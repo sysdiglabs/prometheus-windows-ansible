@@ -3,7 +3,18 @@ global:
   scrape_interval: {{ prom_scrape_interval }}
   external_labels: {{ prom_global_labels | to_yaml }}
 scrape_configs:
-{{ (prom_windows_scrape_config + prom_extra_scrape_configs) | to_yaml }}
+- job_name: windows_exporter
+  static_configs:
+    - targets: ["localhost:9182"]
+  {% if prom_keep_metric_matches|length > 0 %}
+  metric_relabel_configs:
+  - source_labels: [__name__]
+    regex: "{{ prom_keep_metric_matches|join("|") }}"
+    action: keep
+  {% endif %}
+{% if prom_extra_scrape_configs|length > 0 %}
+{{ prom_extra_scrape_configs | to_yaml }}
+{% endif %}
 remote_write:
 {% for e in prom_remote_write_endpoints %}
 - url: {{ e['url'] }}

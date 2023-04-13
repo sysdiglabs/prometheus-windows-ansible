@@ -11,6 +11,7 @@ prom_server_log_level: warn
 
 prom_global_labels: {}
 prom_extra_scrape_configs: []
+prom_keep_metric_matches: []
 
 prom_windows_exporter_installer: https://github.com/sysdiglabs/Sysdig-Windows-Prometheus-Bundle/releases/download/v1.0.0-RC1/Sysdig_Windows_Prometheus_Bundle-1.0.0-x64.msi
 prom_windows_exporter_enabled_collectors:
