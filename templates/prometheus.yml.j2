@@ -1,17 +1,18 @@
-{{
-{
-'global': {
-  'scrape_interval': prom_scrape_interval,
-  'external_labels': prom_global_labels },
-'scrape_configs': prom_windows_scrape_config + prom_extra_scrape_configs,
-'remote_write': [{
-    'url': prom_remote_write_url,
-    'bearer_token': prom_remote_write_token,
-    'proxy_url': prom_remote_write_proxy_url,
-    'write_relabel_configs': [{
-        'source_labels': ['instance'],
-        'target_label': 'instance',
-        'replacement': ansible_hostname}]
-}]
-} | to_nice_yaml
-}}
+#jinja2: trim_blocks: True, lstrip_blocks: True
+global:
+  scrape_interval: {{ prom_scrape_interval }}
+  external_labels: {{ prom_global_labels | to_yaml }}
+scrape_configs:
+{{ (prom_windows_scrape_config + prom_extra_scrape_configs) | to_yaml }}
+remote_write:
+{% for e in prom_remote_write_endpoints %}
+- url: {{ e['url'] }}
+  bearer_token: {{ e['token'] }}
+{% if 'proxy_url' in e %}
+  proxy_url: {{ e['proxy_url'] }}
+{% endif %}
+  write_relabel_configs:
+  - source_labels: ['instance']
+    target_label: instance
+    replacement: {{ ansible_hostname }}
+{% endfor %}
