@@ -7,20 +7,20 @@
   when: localdownload | bool
 
 - name: Copy Windows installer
-  win_copy: 
+  ansible.windows.win_copy:
     src: "{{ localdownload_dir }}/windows_exporter.msi"
     dest: "{{ prom_windows_exporter_msi_path }}"
   when: localdownload | bool
 
 - name: Install the Windows exporter
-  win_package:
+  ansible.windows.win_package:
     path: "{{ prom_windows_exporter_msi_path }}"
     product_id: "{{ prom_windows_exporter_product_id }}"
     arguments: TEXTFILE_DIR="{{ prom_windows_exporter_textfile_dir }}"
   when: localdownload | bool
 
 - name: Install the Windows exporter
-  win_package:
+  ansible.windows.win_package:
     path: "{{ prom_windows_exporter_installer }}"
     product_id: "{{ prom_windows_exporter_product_id }}"
     arguments: TEXTFILE_DIR="{{ prom_windows_exporter_textfile_dir }}"

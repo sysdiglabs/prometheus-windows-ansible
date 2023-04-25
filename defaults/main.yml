@@ -42,6 +42,8 @@ prom_windows_exporter_textfile_dir: "{{ prom_windows_exporter_data_dir }}\\textf
 prom_windows_exporter_script_dir: "{{ prom_windows_exporter_app_dir }}\\scripts"
 prom_windows_exporter_script_dir_local: ""
 
+prom_windows_exporter_process_priority: 3
+
 prom_agent_config_file: "{{ prom_windows_exporter_app_dir }}\\prometheus.yml"
 
 
