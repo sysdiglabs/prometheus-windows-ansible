@@ -8,10 +8,8 @@
     type: dword
   loop:
     - windows_exporter.exe
-    - prometheus.exe
   notify:
     - Restart windows_exporter
-    - Restart Prometheus
 
 - name: Create textfile collector directory
   ansible.windows.win_file:
