@@ -1,7 +1,7 @@
 #jinja2: trim_blocks: True, lstrip_blocks: True
 global:
   scrape_interval: {{ prom_scrape_interval }}
-  external_labels: {{ prom_global_labels | to_yaml }}
+  external_labels: {{ prom_global_labels | to_json }}
 scrape_configs:
 - job_name: windows_exporter
   static_configs:
