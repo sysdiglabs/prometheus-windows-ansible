@@ -1,10 +1,12 @@
 ---
 # tasks file for prometheus_windows
 
-- fail:
-    msg: The "token" var must be provided for each remote write endpoint
-  when: ('token' not in item) or (item['token']|length == 0)
+- name: Ensure token is provided for each remote write endpoint
+  assert:
+    that: ('token' in item) and (item['token']|length > 0)
+    fail_msg: The "token" var must be provided for each remote write endpoint
   loop: "{{ prom_remote_write_endpoints }}"
+  no_log: true
   tags:
     - configure
 
